@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   StyleSheet,
   StatusBar,
@@ -6,8 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
-import Colors, {images, fonts} from '../../../constants';
+import React, { useState } from 'react';
+import Colors, { images, fonts } from '../../../constants';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,9 +17,9 @@ import mainStyle from '../../styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextBox from '../../../components/textbox';
 import Button from '../../../components/button';
-import {useDispatch} from 'react-redux';
-import {userAction} from '../../../redux/userdata';
-const Health = ({navigation}) => {
+import { useDispatch } from 'react-redux';
+import { userAction } from '../../../redux/userdata';
+const Health = ({ navigation }) => {
   const dispatch = useDispatch();
   const [vet, setvet] = useState('');
   const [doi, setdoi] = useState('');
@@ -46,11 +47,46 @@ const Health = ({navigation}) => {
   const [sex, setsex] = useState('');
   const [color, setcolor] = useState('');
   const [ct, setct] = useState('');
-// console.log(vet)
   const handleForm = () => {
-    // api integation 
-    dispatch(userAction.handleForm2());
-    navigation.navigate('home');
+    const formData = {
+      vet,
+      doi,
+      certificate,
+      con1,
+      con2,
+      origin,
+      state,
+      place,
+      port,
+      estimated,
+      transport,
+      permit,
+      permit2,
+      des,
+      quant,
+      pack,
+      add,
+      seal,
+      commo,
+      type,
+      mic,
+      breed,
+      dob,
+      sex,
+      color,
+      ct
+    };
+
+    axios.post('http://localhost:8080/api/vet-form', formData)
+      .then(response => {
+        console.log(response.data);
+        // Dispatch action and navigate
+        dispatch(userAction.handleForm3());
+        navigation.navigate('home');
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
   return (
     <View style={styles.root}>
@@ -59,16 +95,16 @@ const Health = ({navigation}) => {
         translucent
         barStyle="dark-content"
       />
-      <View style={[mainStyle.view1, {marginBottom: hp(2)}]}>
+      <View style={[mainStyle.view1, { marginBottom: hp(2) }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-ios" size={18} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>Health Certificate </Text>
-        <View style={{width: wp(10)}} />
+        <View style={{ width: wp(10) }} />
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: hp(2)}}>
+        contentContainerStyle={{ paddingBottom: hp(2) }}>
         <Text style={styles.mainhead}>
           Veterinary Health Certificate for export of dogs from the united State
           of America to India{' '}
