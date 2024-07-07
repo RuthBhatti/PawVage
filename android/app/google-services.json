@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "384850189035",
+    "project_id": "pawvoage",
+    "storage_bucket": "pawvoage.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384850189035:android:d902857da55b036596bcae",
+        "android_client_info": {
+          "package_name": "com.pawvoage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWaAG0XwBDHpoCShdJWSFGsHXeErgKSgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
