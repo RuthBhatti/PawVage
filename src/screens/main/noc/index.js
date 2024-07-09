@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StyleSheet, StatusBar, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, StatusBar, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import Colors, { images, fonts } from '../../../constants';
 import {
@@ -62,7 +62,7 @@ const Noc = ({ navigation }) => {
       medsign
     };
 
-    axios.post('http://localhost:8080/api/noc-form', formData)
+    axios.post('http://10.0.2.2:8080/api/noc-form', formData)
       .then(response => {
         console.log(response.data);
         // Dispatch action and navigate
@@ -80,9 +80,16 @@ const Noc = ({ navigation }) => {
         translucent
         barStyle="dark-content"
       />
-      <View style={[mainStyle.view1, { marginBottom: hp(2) }]}>
+      {/* <View style={[mainStyle.view1, { marginBottom: hp(2) }]}>
         <Icon name="arrow-back-ios" size={18} color="black" />
         <Text style={styles.title}>Health Certificate </Text>
+        <View style={{ width: wp(10) }} />
+      </View> */}
+      <View style={[mainStyle.view1, { marginBottom: hp(2) }]}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back-ios" size={18} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Health Certificate</Text>
         <View style={{ width: wp(10) }} />
       </View>
       <ScrollView
