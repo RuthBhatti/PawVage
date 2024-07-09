@@ -18,10 +18,11 @@ import TextBox from '../../../components/textbox';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../../../components/loader';
-
+import {useDispatch} from 'react-redux';
+import {userAction} from '../../../redux/userdata';
 const Signup = ({navigation}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(true);
-
+  const dispatch = useDispatch();
   const [first, setfirst] = useState('');
   const [last, setlast] = useState('');
   const [mail, setmail] = useState('');
@@ -60,14 +61,13 @@ const Signup = ({navigation}) => {
             lastname: last,
             email: mail,
           };
-
           firestore()
             .collection('users')
             .doc(userCredential.user.uid)
             .set(useData);
 
           setloding(false);
-          navigation.navigate('home');
+          dispatch(userAction.userauth());
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {

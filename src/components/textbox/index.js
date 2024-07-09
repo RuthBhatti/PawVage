@@ -16,6 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const index = ({
+  dis = true,
   val,
   onchan,
   plac,
@@ -60,6 +61,7 @@ const index = ({
         // multiline={false}
         keyboardType="default"
         secureTextEntry={eye ? true : false}
+        editable={dis}
       />
       {plac == 'Enter Color Name' && isimg == 'yes' ? (
         <Image source={images.color} resizeMode="contain" style={styles.img} />
