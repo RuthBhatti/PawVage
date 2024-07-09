@@ -77,7 +77,7 @@ const Health = ({ navigation }) => {
       ct
     };
 
-    axios.post('http://localhost:8080/api/vet-form', formData)
+    axios.post('http://10.0.2.2:8080/api/vet-form', formData)
       .then(response => {
         console.log(response.data);
         // Dispatch action and navigate
