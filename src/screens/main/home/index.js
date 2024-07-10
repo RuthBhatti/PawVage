@@ -8,39 +8,48 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import Colors, {images, fonts} from '../../../constants';
+import React, { useState, useEffect, useRef } from 'react';
+import Colors, { images, fonts } from '../../../constants';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import mainStyle from '../../styles';
-import {CountryPicker} from 'react-native-country-codes-picker';
+import { CountryPicker } from 'react-native-country-codes-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../../../components/button';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
-import {userAction} from '../../../redux/userdata';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { userAction } from '../../../redux/userdata';
 import SplashScreen from 'react-native-splash-screen';
-
-const Home = ({navigation}) => {
+import ConfettiCannon from 'react-native-confetti-cannon'; // Import the ConfettiCannon component
+const Home = ({ navigation }) => {
   useEffect(() => {
     SplashScreen.hide();
   }, []);
+
   const dispatch = useDispatch();
-  const [modalVisible, setmodalVisible] = useState(false);
-  const [suc, setsuc] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [suc, setSuc] = useState(false);
   const [show, setShow] = useState(false);
-  const [arr, setarr] = useState(false);
+  const [arr, setArr] = useState(false);
   const [countryCode, setCountryCode] = useState('');
-  const [arrcode, setarrcode] = useState('');
+  const [arrcode, setArrCode] = useState('');
   const form1 = useSelector(state => state?.user.form1);
   const form2 = useSelector(state => state?.user.form2);
   const form3 = useSelector(state => state?.user.form3);
   const form4 = useSelector(state => state?.user.form4);
 
   const kkk = useSelector(state => state?.user);
+
+  const confettiRef = useRef(null);
+
+  useEffect(() => {
+    if (suc && confettiRef.current) {
+      confettiRef.current.start();
+    }
+  }, [suc]);
 
   console.log('first', kkk);
   return (
@@ -57,31 +66,24 @@ const Home = ({navigation}) => {
         translucent
         barStyle="light-content"
       />
-      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginBottom:hp(2.5)}}>
-        <View style={{width:wp(8)}} />
-        <Text
-        style={[
-          mainStyle.welcome,
-          {color: Colors.white,marginTop:hp(0)},
-        ]}>
-        Home
-      </Text>
-      <TouchableOpacity onPress={()=> dispatch(userAction.logout())}>
-      <Icon1 name="logout-variant" size={20} color="white" />
-
-      </TouchableOpacity>
-
+      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: hp(2.5)}}>
+        <View style={{width: wp(8)}} />
+        <Text style={[mainStyle.welcome, {color: Colors.white, marginTop: hp(0)}]}>
+          Home
+        </Text>
+        <TouchableOpacity onPress={() => dispatch(userAction.logout())}>
+          <Icon1 name="logout-variant" size={20} color="white" />
+        </TouchableOpacity>
       </View>
-
       <TouchableOpacity style={styles.drop} onPress={() => setShow(true)}>
         <Text style={styles.title}>
-          {countryCode != '' ? countryCode : 'Departing Country'}
+          {countryCode !== '' ? countryCode : 'Departing Country'}
         </Text>
         <Icon name="keyboard-arrow-down" size={25} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.drop} onPress={() => setarr(true)}>
+      <TouchableOpacity style={styles.drop} onPress={() => setArr(true)}>
         <Text style={styles.title}>
-          {arrcode != '' ? arrcode : 'Arriving Country'}
+          {arrcode !== '' ? arrcode : 'Arriving Country'}
         </Text>
         <Icon name="keyboard-arrow-down" size={25} color="white" />
       </TouchableOpacity>
@@ -100,8 +102,8 @@ const Home = ({navigation}) => {
       <CountryPicker
         show={arr}
         pickerButtonOnPress={item => {
-          setarrcode(item?.name.en);
-          setarr(false);
+          setArrCode(item?.name.en);
+          setArr(false);
         }}
         style={{
           dialCode: {
@@ -109,7 +111,7 @@ const Home = ({navigation}) => {
           },
         }}
       />
-      <Text style={styles.reset} onPress={() => setmodalVisible(true)}>
+      <Text style={styles.reset} onPress={() => setModalVisible(true)}>
         Reset All
       </Text>
       <View style={[mainStyle.view1, {marginTop: hp(2)}]}>
@@ -132,14 +134,12 @@ const Home = ({navigation}) => {
           </ImageBackground>
         </TouchableOpacity>
       </View>
-
       <Image
         source={images.line}
         resizeMode="contain"
         style={[styles.line, {top: hp(-2.5)}]}
       />
 
-      {/* -----------------------first */}
       <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-7)}]}>
         <Image
           source={form2 ? images.ok : images.not}
@@ -165,9 +165,7 @@ const Home = ({navigation}) => {
         resizeMode="contain"
         style={[styles.line, {top: hp(-9.5)}]}
       />
-
-      {/* ----------------------seconf */}
-      <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-14)}]}>
+            <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-14)}]}>
         <Image
           source={form3 ? images.ok : images.not}
           resizeMode="cover"
@@ -193,14 +191,13 @@ const Home = ({navigation}) => {
         style={[styles.line, {top: hp(-16)}]}
       />
 
-      {/* -----------------------third */}
       <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-20.5)}]}>
         <Image
           source={form4 ? images.ok : images.not}
           resizeMode="cover"
           style={styles.img}
         />
-        <TouchableOpacity onPress={() => setsuc(true)}>
+        <TouchableOpacity onPress={() => setSuc(true)}>
           <ImageBackground
             source={images.arrive}
             resizeMode="cover"
@@ -218,7 +215,7 @@ const Home = ({navigation}) => {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setmodalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}>
         <View style={styles.main}>
           <View style={styles.modalview}>
             <Image
@@ -237,7 +234,7 @@ const Home = ({navigation}) => {
                 fnt={14}
                 hig={5}
                 removeback={true}
-                mov={() => setmodalVisible(false)}
+                mov={() => setModalVisible(false)}
               />
               <Button
                 text="Confirm"
@@ -246,61 +243,68 @@ const Home = ({navigation}) => {
                 hig={5}
                 mov={() => {
                   dispatch(userAction.resetall());
-                  setmodalVisible(false);
+                  setModalVisible(false);
                 }}
               />
             </View>
           </View>
           <TouchableOpacity
             style={styles.free}
-            onPress={() => setmodalVisible(false)}
+            onPress={() => setModalVisible(false)}
           />
         </View>
       </Modal>
       <Modal
-        animationType="fade"
-        transparent={true}
-        visible={suc}
-        onRequestClose={() => {
-          dispatch(userAction.handleForm4());
-          setsuc(false);
-        }}>
-        <View style={styles.main}>
-          <View style={styles.modalview}>
-            <Image
-              source={images.sss}
-              resizeMode="cover"
-              style={{
-                width: wp(80),
-                height: wp(25),
-                alignSelf: 'center',
-              }}
-            />
-            <Text style={[styles.modaltxt, {color: 'green'}]}>
-              Congratulations!
-            </Text>
-            <Text style={[styles.modaltxt1, {color: Colors.black}]}>
-              Your application is approved and you can now travel with your pet.
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.free}
-            onPress={() => {
-              dispatch(userAction.handleForm4());
-              setsuc(false);
+      animationType="fade"
+      transparent={true}
+      visible={suc}
+      onRequestClose={() => {
+        dispatch(userAction.handleForm4());
+        setSuc(false);
+      }}>
+      <View style={styles.main}>
+        <View style={styles.modalview}>
+          <Image
+            source={images.sss}
+            resizeMode="cover"
+            style={{
+              width: wp(80),
+              height: wp(25),
+              alignSelf: 'center',
             }}
           />
+          <Text style={[styles.modaltxt, {color: 'green'}]}>
+            Congratulations!
+          </Text>
+          <Text style={[styles.modaltxt1, {color: Colors.black}]}>
+            Your application is approved and you can now travel with your pet.
+          </Text>
+          <ConfettiCannon
+            ref={confettiRef}
+            count={500}
+            fadeOut
+            explosionSpeed={0}
+            origin={{ x: 0, y: 0 }}
+            fallSpeed={5000} // Adjust this value to make the confetti fall slower
+          />
         </View>
-      </Modal>
-    </ImageBackground>
-  );
+        <TouchableOpacity
+          style={styles.free}
+          onPress={() => {
+            dispatch(userAction.handleForm4());
+            setSuc(false);
+          }}
+        />
+      </View>
+    </Modal>
+  </ImageBackground>
+);
 };
-
 export default Home;
 
 const styles = StyleSheet.create({
   drop: {
-    width: wp(90),
+    width: wp(85),
     height: hp(6),
     flexDirection: 'row',
     alignItems: 'center',
