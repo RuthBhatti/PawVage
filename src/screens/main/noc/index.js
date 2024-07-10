@@ -72,6 +72,13 @@ const handleConfirm = date => {
   hideDatePicker();
 };
 
+const handleDoubleClick = date => {
+  console.log('A date has been double-clicked: ', date);
+  const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '-' + date.getFullYear();
+  setdib(formattedDate); // Format date to MM-DD-YYYY
+  hideDatePicker();
+};
+
 // -------------2nd date--------
 const showDatePickersecond = () => {
   setseconddate(true);
@@ -88,6 +95,13 @@ const handleConfirmsecond = date => {
   hideDatePickersecond();
 };
 
+const handleDoubleClickSecond = date => {
+  console.log('A date has been double-clicked: ', date);
+  const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '-' + date.getFullYear();
+  setcurdate(formattedDate); // Format date to MM-DD-YYYY
+  hideDatePickersecond();
+};
+
 // -------------3rd date--------
 const showDatePickerthird = () => {
   setthirddate(true);
@@ -99,6 +113,13 @@ const hideDatePickerthird = () => {
 
 const handleConfirmthird = date => {
   console.log('A date has been picked: ', date);
+  const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '-' + date.getFullYear();
+  setmeddate(formattedDate); // Format date to MM-DD-YYYY
+  hideDatePickerthird();
+};
+
+const handleDoubleClickThird = date => {
+  console.log('A date has been double-clicked: ', date);
   const formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '-' + date.getFullYear();
   setmeddate(formattedDate); // Format date to MM-DD-YYYY
   hideDatePickerthird();
