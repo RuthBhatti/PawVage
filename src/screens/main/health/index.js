@@ -81,7 +81,7 @@ const Health = ({ navigation }) => {
       .then(response => {
         console.log(response.data);
         // Dispatch action and navigate
-        dispatch(userAction.handleForm3());
+        dispatch(userAction. handleForm2());
         navigation.navigate('home');
       })
       .catch(error => {
