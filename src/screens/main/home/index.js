@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { userAction } from '../../../redux/userdata';
 import SplashScreen from 'react-native-splash-screen';
-import ConfettiCannon from 'react-native-confetti-cannon'; // Import the ConfettiCannon component
+import ConfettiCannon from 'react-native-confetti-cannon'; 
 const Home = ({ navigation }) => {
   useEffect(() => {
     SplashScreen.hide();

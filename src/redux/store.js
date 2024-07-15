@@ -1,15 +1,3 @@
-// import {configureStore} from '@reduxjs/toolkit';
-
-// import MyUserCArt from './userdata';
-
-// const mystore = configureStore({
-//   reducer: {
-//     user: MyUserCArt.reducer,
-//   },
-// });
-
-// export default mystore;
-
 import {configureStore} from '@reduxjs/toolkit';
 import storage from '@react-native-async-storage/async-storage';
 
