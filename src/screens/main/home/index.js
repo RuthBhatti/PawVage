@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   StatusBar,
@@ -8,22 +9,18 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
-import Colors, { images, fonts } from '../../../constants';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { useSelector, useDispatch } from 'react-redux';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import mainStyle from '../../styles';
-import { CountryPicker } from 'react-native-country-codes-picker';
+import CountryPicker from 'react-native-country-picker-modal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../../../components/button';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { userAction } from '../../../redux/userdata';
+import { userAction } from '../../../redux/userdata'; 
+import Colors, { images, fonts } from '../../../constants';
 import SplashScreen from 'react-native-splash-screen';
-import ConfettiCannon from 'react-native-confetti-cannon'; 
+import ConfettiCannon from 'react-native-confetti-cannon';
+
 const Home = ({ navigation }) => {
   useEffect(() => {
     SplashScreen.hide();
@@ -32,16 +29,14 @@ const Home = ({ navigation }) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [suc, setSuc] = useState(false);
-  const [show, setShow] = useState(false);
-  const [arr, setArr] = useState(false);
+  const [showDeparting, setShowDeparting] = useState(false);
+  const [showArriving, setShowArriving] = useState(false);
   const [countryCode, setCountryCode] = useState('');
   const [arrcode, setArrCode] = useState('');
   const form1 = useSelector(state => state?.user.form1);
   const form2 = useSelector(state => state?.user.form2);
   const form3 = useSelector(state => state?.user.form3);
   const form4 = useSelector(state => state?.user.form4);
-
-  const kkk = useSelector(state => state?.user);
 
   const confettiRef = useRef(null);
 
@@ -51,7 +46,6 @@ const Home = ({ navigation }) => {
     }
   }, [suc]);
 
-  console.log('first', kkk);
   return (
     <ImageBackground
       source={images.homeback}
@@ -66,55 +60,61 @@ const Home = ({ navigation }) => {
         translucent
         barStyle="light-content"
       />
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: hp(2.5)}}>
-        <View style={{width: wp(8)}} />
-        <Text style={[mainStyle.welcome, {color: Colors.white, marginTop: hp(0)}]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: hp(2.5) }}>
+        <View style={{ width: wp(8) }} />
+        <Text style={[mainStyle.welcome, { color: Colors.white, marginTop: hp(0) }]}>
           Home
         </Text>
         <TouchableOpacity onPress={() => dispatch(userAction.logout())}>
           <Icon1 name="logout-variant" size={20} color="white" />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.drop} onPress={() => setShow(true)}>
+      <TouchableOpacity style={styles.drop} onPress={() => setShowDeparting(true)}>
         <Text style={styles.title}>
           {countryCode !== '' ? countryCode : 'Departing Country'}
         </Text>
         <Icon name="keyboard-arrow-down" size={25} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.drop} onPress={() => setArr(true)}>
+      <TouchableOpacity style={styles.drop} onPress={() => setShowArriving(true)}>
         <Text style={styles.title}>
           {arrcode !== '' ? arrcode : 'Arriving Country'}
         </Text>
         <Icon name="keyboard-arrow-down" size={25} color="white" />
       </TouchableOpacity>
+      {/* Departing Country Picker with Search */}
       <CountryPicker
-        show={show}
-        pickerButtonOnPress={item => {
-          setCountryCode(item?.name.en);
-          setShow(false);
+        visible={showDeparting}
+        withFilter
+        onSelect={(item) => {
+          setCountryCode(item.name);
+          setShowDeparting(false);
         }}
-        style={{
-          dialCode: {
-            display: 'none',
-          },
-        }}
+        onClose={() => setShowDeparting(false)} // Ensure state is reset
+        renderFlagButton={() => null}
+        renderCloseButton={() => null} // Removes the close button
       />
+      {/* Arriving Country Picker with Search */}
       <CountryPicker
-        show={arr}
-        pickerButtonOnPress={item => {
-          setArrCode(item?.name.en);
-          setArr(false);
+        visible={showArriving}
+        withFilter
+        onSelect={(item) => {
+          setArrCode(item.name);
+          setShowArriving(false);
         }}
-        style={{
-          dialCode: {
-            display: 'none',
-          },
-        }}
+        onClose={() => setShowArriving(false)} // Ensure state is reset
+        renderFlagButton={() => null}
+        renderCloseButton={() => null} // Removes the close button
       />
-      <Text style={styles.reset} onPress={() => setModalVisible(true)}>
+      <Text
+        style={styles.reset}
+        onPress={() => {
+          dispatch(userAction.resetall()); // Dispatch resetall action
+          setModalVisible(true);
+        }}
+      >
         Reset All
       </Text>
-      <View style={[mainStyle.view1, {marginTop: hp(2)}]}>
+      <View style={[mainStyle.view1, { marginTop: hp(2) }]}>
         <Image
           source={form1 ? images.ok : images.not}
           resizeMode="cover"
@@ -137,10 +137,9 @@ const Home = ({ navigation }) => {
       <Image
         source={images.line}
         resizeMode="contain"
-        style={[styles.line, {top: hp(-2.5)}]}
+        style={[styles.line, { top: hp(-2.5) }]}
       />
-
-      <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-7)}]}>
+      <View style={[mainStyle.view1, { marginTop: hp(2), top: hp(-7) }]}>
         <Image
           source={form2 ? images.ok : images.not}
           resizeMode="cover"
@@ -163,9 +162,9 @@ const Home = ({ navigation }) => {
       <Image
         source={images.line}
         resizeMode="contain"
-        style={[styles.line, {top: hp(-9.5)}]}
+        style={[styles.line, { top: hp(-9.5) }]}
       />
-            <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-14)}]}>
+      <View style={[mainStyle.view1, { marginTop: hp(2), top: hp(-14) }]}>
         <Image
           source={form3 ? images.ok : images.not}
           resizeMode="cover"
@@ -188,10 +187,9 @@ const Home = ({ navigation }) => {
       <Image
         source={images.line}
         resizeMode="contain"
-        style={[styles.line, {top: hp(-16)}]}
+        style={[styles.line, { top: hp(-16) }]}
       />
-
-      <View style={[mainStyle.view1, {marginTop: hp(2), top: hp(-20.5)}]}>
+      <View style={[mainStyle.view1, { marginTop: hp(2), top: hp(-20.5) }]}>
         <Image
           source={form4 ? images.ok : images.not}
           resizeMode="cover"
@@ -221,13 +219,13 @@ const Home = ({ navigation }) => {
             <Image
               source={images.reset}
               resizeMode="contain"
-              style={{width: wp(13), height: wp(13), alignSelf: 'center'}}
+              style={{ width: wp(13), height: wp(13), alignSelf: 'center' }}
             />
             <Text style={styles.modaltxt}>Reset all forms Data</Text>
             <Text style={styles.modaltxt1}>
               Do you want to reset all forms Data
             </Text>
-            <View style={[mainStyle.view1, {justifyContent: 'space-around'}]}>
+            <View style={[mainStyle.view1, { justifyContent: 'space-around' }]}>
               <Button
                 text="Cancel"
                 wid="35"
@@ -254,52 +252,53 @@ const Home = ({ navigation }) => {
           />
         </View>
       </Modal>
-      <Modal
-      animationType="fade"
-      transparent={true}
-      visible={suc}
-      onRequestClose={() => {
-        dispatch(userAction.handleForm4());
-        setSuc(false);
-      }}>
-      <View style={styles.main}>
-        <View style={styles.modalview}>
-          <Image
-            source={images.sss}
-            resizeMode="cover"
-            style={{
-              width: wp(80),
-              height: wp(25),
-              alignSelf: 'center',
+           <Modal
+        animationType="fade"
+        transparent={true}
+        visible={suc}
+        onRequestClose={() => {
+          dispatch(userAction.handleForm4());
+          setSuc(false);
+        }}>
+        <View style={styles.main}>
+          <View style={styles.modalview}>
+            <Image
+              source={images.sss}
+              resizeMode="cover"
+              style={{
+                width: wp(80),
+                height: wp(25),
+                alignSelf: 'center',
+              }}
+            />
+            <Text style={[styles.modaltxt, {color: 'green'}]}>
+              Congratulations!
+            </Text>
+            <Text style={[styles.modaltxt1, {color: Colors.black}]}>
+              Your application is approved and you can now travel with your pet.
+            </Text>
+            <ConfettiCannon
+              ref={confettiRef}
+              count={500}
+              fadeOut
+              explosionSpeed={0}
+              origin={{ x: 0, y: 0 }}
+              fallSpeed={5000} // Adjust this value to make the confetti fall slower
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.free}
+            onPress={() => {
+              dispatch(userAction.handleForm4());
+              setSuc(false);
             }}
           />
-          <Text style={[styles.modaltxt, {color: 'green'}]}>
-            Congratulations!
-          </Text>
-          <Text style={[styles.modaltxt1, {color: Colors.black}]}>
-            Your application is approved and you can now travel with your pet.
-          </Text>
-          <ConfettiCannon
-            ref={confettiRef}
-            count={500}
-            fadeOut
-            explosionSpeed={0}
-            origin={{ x: 0, y: 0 }}
-            fallSpeed={5000} // Adjust this value to make the confetti fall slower
-          />
         </View>
-        <TouchableOpacity
-          style={styles.free}
-          onPress={() => {
-            dispatch(userAction.handleForm4());
-            setSuc(false);
-          }}
-        />
-      </View>
-    </Modal>
-  </ImageBackground>
-);
+      </Modal>
+    </ImageBackground>
+  );
 };
+
 export default Home;
 
 const styles = StyleSheet.create({
